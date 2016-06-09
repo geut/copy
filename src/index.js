@@ -1,4 +1,4 @@
-import getFileMeta from './lib/filemeta';
+import { default as _getFileMeta } from './lib/filemeta';
 import { default as copyFile } from './lib/copy';
 import config from './config';
 import stack from 'callsite';
@@ -14,7 +14,7 @@ const tags = [
 function _copy(asset, opts = {}) {
     let fileMeta;
     if (typeof asset === 'string') {
-        fileMeta = getFileMeta(
+        fileMeta = _getFileMeta(
             path.dirname(stack()[2].getFileName()),
             asset,
             opts
@@ -77,7 +77,7 @@ function _copy(asset, opts = {}) {
     });
 }
 
-export default function copy(...args) {
+function copy(...args) {
     if (args.length === 0) {
         throw new Error('asset or options parameter not found.');
     }
@@ -88,7 +88,7 @@ export default function copy(...args) {
     }
 
     if (typeof args[0] === 'string' ||
-        (typeof args[0] === 'object' && args[0].filename)) {
+        typeof args[0] === 'object' && args[0].filename) {
         return _copy(args[0], config());
     }
 
@@ -97,3 +97,10 @@ export default function copy(...args) {
         return _copy(asset, opts);
     };
 }
+
+copy.getFileMeta = function getFileMeta(...args) {
+    args[2] = config(args[2]);
+    return _getFileMeta(...args);
+};
+
+export default copy;
