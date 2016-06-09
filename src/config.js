@@ -22,7 +22,7 @@ const defaultConfig = {
 };
 
 export default function config(userOpts = {}) {
-    const result = readPkgUp.sync();
+    const result = readPkgUp.sync({ cwd: userOpts.pkgLookUp });
     let pkgOpts = {};
     if (result.pkg && result.pkg.copyAsset) {
         pkgOpts = result.pkg.copyAsset;
