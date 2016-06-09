@@ -93,9 +93,13 @@ function copy(...args) {
     }
 
     const opts = config(args[0]);
-    return function copyInstance(asset) {
+    const copyInstance = function copyInstance(asset) {
         return _copy(asset, opts);
     };
+    copyInstance.getFileMeta = function getFileMeta(dirname, asset) {
+        return _getFileMeta(dirname, asset, opts);
+    };
+    return copyInstance;
 }
 
 copy.getFileMeta = function getFileMeta(...args) {
