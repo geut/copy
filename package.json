@@ -1,5 +1,5 @@
 {
-  "name": "copy-asset",
+  "name": "@geut/copy",
   "version": "1.0.0",
   "description": "An async lib to copy assets to a custom destination and return a filemeta with the new path.",
   "main": "dist/index.js",
