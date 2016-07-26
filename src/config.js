@@ -1,6 +1,7 @@
 import path from 'path';
 import crypto from 'crypto';
 import readPkgUp from 'read-pkg-up';
+import errors from './errors';
 
 const defaultConfig = {
     template: '[hash].[ext]',
@@ -40,12 +41,12 @@ export default function config(userOpts = {}) {
             opts.src = opts.src.map((elem) => path.resolve(elem));
         }
     } else {
-        throw new Error('Option `src` is required.');
+        throw new Error(errors.srcRequired);
     }
     if (opts.dest) {
         opts.dest = path.resolve(opts.dest);
     } else {
-        throw new Error('Option `dest` is required ');
+        throw new Error(errors.destRequired);
     }
     return opts;
 }

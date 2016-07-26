@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "pretest": "del-cli test/dest",
-    "test": "nyc --cache ava test --verbose",
+    "test": "ava test --verbose",
     "posttest": "eslint .",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "build": "del-cli dist && babel src --out-dir dist",
@@ -31,7 +31,10 @@
     "nyc": "^6.4.4"
   },
   "eslintConfig": {
-    "extends": "tinchoz49"
+    "extends": "tinchoz49",
+    "rules": {
+      "max-len": 0
+    }
   },
   "babel": {
     "presets": [
@@ -67,15 +70,9 @@
   },
   "homepage": "https://github.com/geut/copy-asset#readme",
   "dependencies": {
-    "callsite": "^1.0.0",
     "mkdirp": "^0.5.1",
     "pify": "^2.3.0",
-    "read-pkg-up": "^1.0.1"
-  },
-  "copyAsset": {
-    "src": [
-      "test/src"
-    ],
-    "dest": "test/dest"
+    "read-pkg-up": "^1.0.1",
+    "stack-trace": "0.0.9"
   }
 }
