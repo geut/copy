@@ -4,12 +4,16 @@ import errors from './errors';
 import config from './config';
 import stackTrace from 'stack-trace';
 import path from 'path';
+import url from 'url';
 
 const tags = [
     'path',
     'name',
     'hash',
-    'ext'
+    'ext',
+    'query',
+    'qparams',
+    'qhash'
 ];
 
 function _copy(asset, opts = {}) {
@@ -40,12 +44,18 @@ function _copy(asset, opts = {}) {
                 tags.forEach(tag => {
                     tpl = tpl.replace(
                         '[' + tag + ']',
-                        fileMeta[tag] || opts[tag]
+                        fileMeta[tag] || opts[tag] || ''
                     );
                 });
             }
 
-            fileMeta.resultAbsolutePath = path.resolve(opts.dest, tpl);
+            const resultUrl = url.parse(tpl);
+            fileMeta.resultAbsolutePath = path.resolve(
+                opts.dest,
+                resultUrl.pathname
+            );
+            fileMeta.extra = (resultUrl.search || '') + (resultUrl.hash || '');
+
 
             return Promise.resolve(
                 opts.transform(fileMeta)

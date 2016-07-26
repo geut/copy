@@ -12,7 +12,7 @@
     "posttest": "eslint .",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "build": "del-cli dist && babel src --out-dir dist",
-    "start": "del-cli dist && babel src --watch --source-maps --out-dir dist",
+    "start": "npm run build -- --watch --source-maps",
     "prepublish": "npm run test && npm run build"
   },
   "devDependencies": {
@@ -28,6 +28,7 @@
     "eslint": "^2.11.1",
     "eslint-config-postcss": "^2.0.2",
     "eslint-config-tinchoz49": "^2.1.0",
+    "hasha": "^2.2.0",
     "nyc": "^6.4.4"
   },
   "eslintConfig": {

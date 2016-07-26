@@ -14,7 +14,8 @@ export default function getFileMeta(dirname, value, opts) {
     const parsedUrl = url.parse(value, true);
     const filename = parsedUrl.pathname;
     const pathname = path.resolve(dirname, filename);
-    const extra = (parsedUrl.search || '') + (parsedUrl.hash || '');
+    const params = parsedUrl.search || '';
+    const hash = parsedUrl.hash || '';
 
     // path between the basePath and the filename
     const src = opts.src.filter(item => pathname.indexOf(item) !== -1)[0];
@@ -24,7 +25,8 @@ export default function getFileMeta(dirname, value, opts) {
 
     const ext = path.extname(pathname);
     const fileMeta = {
-        dirname,
+        sourceInputFile: dirname, // path to the origin CSS file
+        sourceValue: value,
         filename,
         // the absolute path without the #hash param and ?query
         absolutePath: pathname,
@@ -34,7 +36,9 @@ export default function getFileMeta(dirname, value, opts) {
         name: path.basename(pathname, ext),
         // extension without the '.'
         ext: ext.slice(1),
-        extra,
+        query: params + hash,
+        qparams: params.length > 0 ? params.slice(1) : '',
+        qhash: hash.length > 0 ? hash.slice(1) : '',
         src
     };
 
