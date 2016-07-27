@@ -1,6 +1,7 @@
 import test from 'ava';
 import copy from '../src';
 import errors from '../src/errors';
+import path from 'path';
 
 test('should throw an error if the default arguments (asset and/or options) are not passed.', t => {
     return t.throws(() => {
@@ -33,10 +34,20 @@ test('should return a copyInstance only if the options argument is passed', t =>
     t.is(object.name, 'copyInstance');
 });
 
-test('should return a promise if the asset argument is passed', t => {
-    const object = copy('fixtures/text1.txt', {
-        src: 'fixtures',
+test('should work with a package.json options (object options)', t => {
+    const object = copy({
+        pkgLookUp: './fixtures/pkg-options',
         dest: 'dest'
     });
-    t.true(typeof object.then === 'function');
+
+    t.true(path.basename(object.opts.src[0]) === 'other-src');
+});
+
+test('should work with a package.json options (extended from a file)', t => {
+    const object = copy({
+        pkgLookUp: './fixtures/pkg-extend',
+        dest: 'dest'
+    });
+
+    t.true(path.basename(object.opts.src[0]) === 'other-src');
 });

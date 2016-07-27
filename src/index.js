@@ -116,6 +116,8 @@ function copy(...args) {
     copyInstance.getFileMeta = function getFileMeta(dirname, asset) {
         return _getFileMeta(dirname, asset, opts);
     };
+    copyInstance.opts = opts;
+
     return copyInstance;
 }
 
