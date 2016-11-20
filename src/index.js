@@ -34,7 +34,7 @@ function _copy(asset, opts = {}) {
         () => {
             return fileMeta.resultAbsolutePath;
         },
-        contents => {
+        (contents, isModified) => {
             fileMeta.contents = contents;
             fileMeta.hash = opts.hashFunction(contents);
             let tpl = opts.template;
@@ -58,12 +58,9 @@ function _copy(asset, opts = {}) {
 
 
             return Promise.resolve(
-                opts.transform(fileMeta)
+                isModified ? opts.transform(fileMeta) : fileMeta
             )
-            .then(transformed => {
-                fileMeta = transformed || {};
-                return fileMeta.contents;
-            });
+            .then(fileMetaTransformed => fileMetaTransformed.contents);
         }
     )
     .then(() => {
@@ -97,21 +94,17 @@ function _copy(asset, opts = {}) {
  */
 function copy(...args) {
     if (args.length === 0) {
-        throw new Error(errors.minimalArgs);
+        throw new Error(errors.minimalArgs());
     }
 
     if (args.length === 2 || typeof args[0] === 'string' || typeof args[0] === 'object' && args[0].filename) {
         // the best case: always redefine (Object.assign again) the options
-        return new Promise(() => {
-            return  _copy(args[0], config(args.length === 2 ? args[1] : {}));
-        });
+        return Promise.resolve(_copy(args[0], config(args.length === 2 ? args[1] : {})));
     }
 
     const opts = config(args[0]);
     const copyInstance = function copyInstance(asset) {
-        return new Promise(() => {
-            return  _copy(asset, opts);
-        });
+        return Promise.resolve(_copy(asset, opts));
     };
     copyInstance.getFileMeta = function getFileMeta(dirname, asset) {
         return _getFileMeta(dirname, asset, opts);

@@ -4,7 +4,7 @@ import readPkgUp from 'read-pkg-up';
 import errors from './errors';
 
 const defaultConfig = {
-    template: '[hash].[ext]',
+    template: '[hash].[ext][query]',
     relativePath(fileMeta, options) {
         return path.join(
             options.dest,
@@ -41,12 +41,12 @@ export default function config(userOpts = {}) {
             opts.src = opts.src.map((elem) => path.resolve(elem));
         }
     } else {
-        throw new Error(errors.srcRequired);
+        throw new Error(errors.srcRequired());
     }
     if (opts.dest) {
         opts.dest = path.resolve(opts.dest);
     } else {
-        throw new Error(errors.destRequired);
+        throw new Error(errors.destRequired());
     }
     return opts;
 }

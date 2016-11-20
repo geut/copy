@@ -1,5 +1,6 @@
 import url from 'url';
 import path from 'path';
+import errors from '../errors';
 
 /**
  * Helper function that reads the file ang get some helpful information
@@ -20,7 +21,7 @@ export default function getFileMeta(dirname, value, opts) {
     // path between the basePath and the filename
     const src = opts.src.filter(item => pathname.indexOf(item) !== -1)[0];
     if (!src) {
-        throw Error(`"src" not found in ${pathname}`);
+        throw Error(errors.srcNotFound(pathname));
     }
 
     const ext = path.extname(pathname);

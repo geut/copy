@@ -4,25 +4,25 @@ import errors from '../src/errors';
 import path from 'path';
 
 test('should throw an error if the default arguments (asset and/or options) are not passed.', t => {
-    return t.throws(() => {
-        copy();
-    });
+    return t.throws(copy);
 });
 
 test('should throw an error if the "src" option is not setted', t => {
-    return copy('fixtures/text1.txt')
-    .catch(err => {
-        t.is(err.message, errors.srcRequired);
-    });
+    return t.throws(() => copy('fixtures/text1.txt'), errors.srcRequired());
 });
 
+
 test('should throw an error if the "dest" option is not setted', t => {
-    return copy('fixtures/text1.txt', {
-        src: 'fixtures'
-    })
-    .catch(err => {
-        t.is(err.message, errors.destRequired);
-    });
+    return t.throws(() => copy('fixtures/text1.txt', { src: 'fixtures' }), errors.destRequired());
+});
+
+test('should throw an error if the "src" and "dest" are setted but the "src" is not corresponding with the asset path', t => {
+    return t.throws(() => {
+        return copy('fixtures/text1.txt', {
+            src: 'different-path',
+            dest: 'dest'
+        });
+    }, errors.srcNotFound(path.resolve('fixtures/text1.txt')));
 });
 
 test('should return a copyInstance only if the options argument is passed', t => {
