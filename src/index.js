@@ -35,31 +35,35 @@ function _copy(asset, opts = {}) {
             return fileMeta.resultAbsolutePath;
         },
         (contents, isModified) => {
+
             fileMeta.contents = contents;
-            fileMeta.hash = opts.hashFunction(contents);
-            let tpl = opts.template;
-            if (typeof tpl === 'function') {
-                tpl = tpl(fileMeta);
-            } else {
-                tags.forEach(tag => {
-                    tpl = tpl.replace(
-                        '[' + tag + ']',
-                        fileMeta[tag] || opts[tag] || ''
-                    );
-                });
-            }
-
-            const resultUrl = url.parse(tpl);
-            fileMeta.resultAbsolutePath = path.resolve(
-                opts.dest,
-                resultUrl.pathname
-            );
-            fileMeta.extra = (resultUrl.search || '') + (resultUrl.hash || '');
-
 
             return Promise.resolve(
                 isModified ? opts.transform(fileMeta) : fileMeta
             )
+            .then(fileMetaTransformed => {
+                fileMetaTransformed.hash = opts.hashFunction(contents);
+                let tpl = opts.template;
+                if (typeof tpl === 'function') {
+                    tpl = tpl(fileMetaTransformed);
+                } else {
+                    tags.forEach(tag => {
+                        tpl = tpl.replace(
+                            '[' + tag + ']',
+                            fileMetaTransformed[tag] || opts[tag] || ''
+                        );
+                    });
+                }
+
+                const resultUrl = url.parse(tpl);
+                fileMetaTransformed.resultAbsolutePath = path.resolve(
+                    opts.dest,
+                    resultUrl.pathname
+                );
+                fileMetaTransformed.extra = (resultUrl.search || '') +
+                    (resultUrl.hash || '');
+                return fileMetaTransformed;
+            })
             .then(fileMetaTransformed => fileMetaTransformed.contents);
         }
     )
